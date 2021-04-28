@@ -50,3 +50,12 @@ TagManager:
   - name: frontground
     uniqueID: 2399693575
     locked: 0
+  - name: ui_background
+    uniqueID: 3303352597
+    locked: 0
+  - name: ui_midground
+    uniqueID: 576797827
+    locked: 0
+  - name: ui_frontground
+    uniqueID: 3553309987
+    locked: 0
