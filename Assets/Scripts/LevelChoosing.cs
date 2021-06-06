@@ -11,6 +11,6 @@ public class LevelChoosing : MonoBehaviour
     public void change()
     {
         UnityEngine.Debug.Log("clicklevel");
-        SceneManager.LoadScene(sceneName: scene);
+        //SceneManager.LoadScene(sceneName: scene);
     }
 }

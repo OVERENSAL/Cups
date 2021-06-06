@@ -7,6 +7,6 @@ public class ButtonHandler : MonoBehaviour
 {
     public void click() {
     	UnityEngine.Debug.Log("click");
-        SceneManager.LoadScene(sceneName: "LevelChoosing");
+        //SceneManager.LoadScene(sceneName: "LevelChoosing");
     }
 }

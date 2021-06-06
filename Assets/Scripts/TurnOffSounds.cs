@@ -10,7 +10,7 @@ public class TurnOffSounds : MonoBehaviour
 
     public void click()
     {
-    	GetComponent<Image>().sprite = GetComponent<Image>().sprite == turnOn ? turnOff : turnOn;
+    	this.gameObject.GetComponent<Image>().sprite = this.gameObject.GetComponent<Image>().sprite == turnOn ? turnOff : turnOn;
     	TurnSounds();
     }
 
