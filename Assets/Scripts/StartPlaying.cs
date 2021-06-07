@@ -53,9 +53,11 @@ public class StartPlaying : MonoBehaviour
         target = creator.shuffle(1, target, map);
 
         initGrid();
-        createCups(map, grid1, grid2, grid3, grid4, true);
+        //createCups(map, grid1, grid2, grid3, grid4, true);
+        createCups(map, true);
         fillArrayOfCoords();
-        createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
+        
+        //createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
 
     }
 
@@ -106,18 +108,18 @@ public class StartPlaying : MonoBehaviour
         int indexY = 0;
         while (indexX != 0 || indexY != 0)
         {
-            if (indexY == 0)
+            /*if (indexY == 0)
             {
                 coords.x = 0;
-                for(int i = 0; i < createCups - 1 - indexX; i++)
+                for(int i = 0; i < (CreateCups.width - 1 - indexX); i++)
                 {
                     coords.x += 30;
                 }
                 
-            }
+            }*/
             //создаем стаканчик в позиции грида
             GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), trayPos.position + coords, Quaternion.identity);
-            coords.x += 60;
+            coords.x += 58;
             //Debug.Log(gameObject.transform.position);
             cups.Add(gameObject);
             if (map[indexX, indexY] > 0)
@@ -191,6 +193,47 @@ public class StartPlaying : MonoBehaviour
         targetGrid3.constraintCount = CreateCups.width - 2;
         targetGrid4.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         targetGrid4.constraintCount = CreateCups.width - 3;
+    }
+
+    void createCups(int[,] map, bool size)
+    {
+        Vector3 addCoords = new Vector3(0, 0, 0);
+        int indexX = CreateCups.width - 1;
+        int indexY = 0;
+        while (indexX != 0 || indexY != 0)
+        {
+            if (indexY == 0 && indexX != CreateCups.width - 1)
+            {
+                addCoords.x += 29;
+                addCoords.y += 92;
+            }
+
+            if (indexY == 0)//инициализация сдвига, когда стаканов меньше 7
+            {
+                for (int i = 0; i < (7 - indexX); i++)
+                {
+                    addCoords.x += 29;
+                }
+            }
+            GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), trayPos.position + coords + addCoords, Quaternion.identity);
+            addCoords.x += 58;
+            //Debug.Log(gameObject.transform.position);
+            cups.Add(gameObject);
+            if (map[indexX, indexY] > 0)
+            {
+                List<int> temp = new List<int> { indexX, indexY };
+                cupsIndexes.Add(temp);
+            }
+            indexX--;
+            indexY++;
+            if (indexX < 0)
+            {
+                addCoords.x = -29;              
+                indexX = indexY - 2;
+                indexY = 0;
+            }
+
+        }
     }
 
     // Update is called once per frame
