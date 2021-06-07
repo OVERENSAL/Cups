@@ -56,8 +56,8 @@ public class StartPlaying : MonoBehaviour
         //createCups(map, grid1, grid2, grid3, grid4, true);
         createCups(map, true);
         fillArrayOfCoords();
-        
-        //createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
+        initTargetGrid();
+        createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
 
     }
 
@@ -108,18 +108,9 @@ public class StartPlaying : MonoBehaviour
         int indexY = 0;
         while (indexX != 0 || indexY != 0)
         {
-            /*if (indexY == 0)
-            {
-                coords.x = 0;
-                for(int i = 0; i < (CreateCups.width - 1 - indexX); i++)
-                {
-                    coords.x += 30;
-                }
-                
-            }*/
-            //создаем стаканчик в позиции грида
-            GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), trayPos.position + coords, Quaternion.identity);
-            coords.x += 58;
+            //создаем прикол в позиции грида
+            GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), getGrid(indexX, indexY, grid1, grid2, grid3, grid4).transform.position, Quaternion.identity);
+            gameObject.transform.SetParent(getGrid(indexX, indexY, grid1, grid2, grid3, grid4).transform, false);
             //Debug.Log(gameObject.transform.position);
             cups.Add(gameObject);
             if (map[indexX, indexY] > 0)
@@ -148,7 +139,7 @@ public class StartPlaying : MonoBehaviour
         else 
             return grid4;
 
-    } 
+    } //вернет грид, куда нуно вставить прикол
 
     GameObject emptyOrFull(int number, bool size)
     {
@@ -168,7 +159,7 @@ public class StartPlaying : MonoBehaviour
         if (size)
             return fullCup;
         return smallFullCup;
-    }
+    }//вернет пустой, полный либо прозрачный прикол
 
     void initGrid()
     {
@@ -181,7 +172,7 @@ public class StartPlaying : MonoBehaviour
             grids[i].constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             grids[i].constraintCount = CreateCups.width - i;
         }
-    }
+    }//мем
 
     void initTargetGrid()
     {
@@ -193,7 +184,7 @@ public class StartPlaying : MonoBehaviour
         targetGrid3.constraintCount = CreateCups.width - 2;
         targetGrid4.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         targetGrid4.constraintCount = CreateCups.width - 3;
-    }
+    }//инициализация количества колонок в целевом гриде
 
     void createCups(int[,] map, bool size)
     {
@@ -234,7 +225,7 @@ public class StartPlaying : MonoBehaviour
             }
 
         }
-    }
+    }//помещаем прикол на главный экран
 
     // Update is called once per frame
     void Update()
