@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class MoveCups : MonoBehaviour
 {
+    CupsHandler handler = new CupsHandler();
     private bool isDragging;
 
     public void OnMouseDown()
     {
-        print(transform.position);
-        isDragging = true;
+        handler.init();
+        isDragging = handler.isMovingCup(transform);
+        //handler.setAvailablePlaces(transform);
     }
 
     public void OnMouseUp()
     {
+        print(transform.position);
+        //handler.changeCups();
         isDragging = false;
     }
 

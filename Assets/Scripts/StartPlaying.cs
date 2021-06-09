@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+/*
 public struct CupCoords
 {
-    public int x;
-    public int y;
+    public float x;
+    public float y;
 
-    public CupCoords(int x, int y)
+    public CupCoords(float x, float y)
     {
         this.x = x;
         this.y = y;
     }
 }
-
+*/
 public class StartPlaying : MonoBehaviour
 {
     public Transform trayPos;
@@ -39,14 +39,15 @@ public class StartPlaying : MonoBehaviour
     public Vector3 coords = new Vector3(-205, 75, 0);
 
     CreateCups creator = new CreateCups();
-    public CupCoords[,] cupsCoords;
+    public static CupCoords[,] cupCoords;
+    public static int[,] map;
 
     void Start()
     {
         string[] args = new string[] { };
         creator.Main(args);
-        cupsCoords = new CupCoords[CreateCups.width, CreateCups.width];
-        int[,] map = new int[CreateCups.width, CreateCups.width];
+        cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
+        map = new int[CreateCups.width, CreateCups.width];
         int[,] target = new int[CreateCups.width, CreateCups.width];
         map = creator.createMap(map, CreateCups.allCupsNumber);
         creator.getAvaivableCups(map);
@@ -54,21 +55,27 @@ public class StartPlaying : MonoBehaviour
 
         initGrid();
         //createCups(map, grid1, grid2, grid3, grid4, true);
-        createCups(map, true);
+        createCups(map, cupCoords, true);
+/*        for(int i = 0; i < CreateCups.width; i++)
+        {
+            for(int j = 0; j < CreateCups.width; j++)
+            {
+                Debug.Log(cupCoords[i, j].x + " " + cupCoords[i, j].y);
+            }
+        }*/
         fillArrayOfCoords();
         initTargetGrid();
         createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
-
     }
 
     void fillArrayOfCoords()
     {
         GameObject[] tempCups;
         tempCups = GameObject.FindGameObjectsWithTag("Cup");
-        for(int i = 0; i < tempCups.Length; i++)
+        /*for(int i = 0; i < tempCups.Length; i++)
         {
             Debug.Log(tempCups[0].transform.position);
-        }
+        }*/
         int indexX = CreateCups.width - 1;
         int indexY = 0;
         for(int i = 0; i < 4; i++)
@@ -97,12 +104,12 @@ public class StartPlaying : MonoBehaviour
         }
     }
 
-    CupCoords getCupCoords(Transform transform)
+    /*CupCoords getCupCoords(Transform transform)
     {
         return new CupCoords((int)transform.position.x, (int)transform.position.x);
-    }
+    }*/
 
-    void createCups(int[,] map, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4, bool size)
+    void createCups(int[,] map, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4, bool size)//мелкие приколы
     {
         int indexX = (int)Mathf.Sqrt(map.Length) - 1;
         int indexY = 0;
@@ -145,8 +152,6 @@ public class StartPlaying : MonoBehaviour
     {
         if(number == 0)
         {
-            if (size)
-                return emptyCup;
             return smallEmptyCup;
         }
         else if (number == 1)
@@ -186,7 +191,7 @@ public class StartPlaying : MonoBehaviour
         targetGrid4.constraintCount = CreateCups.width - 3;
     }//инициализация количества колонок в целевом гриде
 
-    void createCups(int[,] map, bool size)
+    void createCups(int[,] map, CupCoords[,] cupCoords, bool size)
     {
         Vector3 addCoords = new Vector3(0, 0, 0);
         int indexX = CreateCups.width - 1;
@@ -206,8 +211,13 @@ public class StartPlaying : MonoBehaviour
                     addCoords.x += 29;
                 }
             }
-            GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), trayPos.position + coords + addCoords, Quaternion.identity);
+
+            Vector3 mainCoords = trayPos.position + coords + addCoords;
+            if (map[indexX, indexY] != 0) {
+                GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), mainCoords, Quaternion.identity);
+            }
             addCoords.x += 58;
+            cupCoords[indexX, indexY] = new CupCoords(mainCoords.x, mainCoords.y);
             //Debug.Log(gameObject.transform.position);
             cups.Add(gameObject);
             if (map[indexX, indexY] > 0)
@@ -226,6 +236,16 @@ public class StartPlaying : MonoBehaviour
 
         }
     }//помещаем прикол на главный экран
+
+    public static CupCoords[,] getCupCoords()
+    {
+        return cupCoords;
+    }
+
+    public static int[,] getMap()
+    {
+        return map;
+    }
 
     // Update is called once per frame
     void Update()
