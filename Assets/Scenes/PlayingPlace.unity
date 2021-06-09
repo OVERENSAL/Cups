@@ -277,7 +277,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 445.9018
+  orthographic size: 469.64368
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -320,8 +320,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trayPos: {fileID: 326423683}
-  cup: {fileID: 6502031154567250815, guid: dfb3714edf71cbf41ba98306533f361c, type: 3}
-  fullCup: {fileID: 3945974805567078143, guid: 248b52993c9cb494da2fa3500d3ab595, type: 3}
+  cup: {fileID: 8238329028965015141, guid: eaa6a979a239b7d46b496fd146e72008, type: 3}
+  fullCup: {fileID: 2709077727120445615, guid: 3fd35205582f04d438e6ebfee683e3aa, type: 3}
   emptyCup: {fileID: 6020440487778640520, guid: 2d93d71492dadc545ade118fecd2fc8b, type: 3}
   smallCup: {fileID: 1925325674385610710, guid: 1909f3600237a8249aa989adfca9183c, type: 3}
   smallFullCup: {fileID: 2957982637820730108, guid: 777306b01a4cc02428563a97a8a2402d, type: 3}

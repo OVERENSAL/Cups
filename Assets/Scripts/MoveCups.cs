@@ -11,23 +11,56 @@ public class MoveCups : MonoBehaviour
     {
         handler.init();
         isDragging = handler.isMovingCup(transform);
-        //handler.setAvailablePlaces(transform);
+        handler.setAvailablePlaces(transform);
     }
 
     public void OnMouseUp()
     {
-        print(transform.position);
-        //handler.changeCups();
+        if (handler.isValidCoords(transform))
+        {
+            handler.changeMap();
+        } else
+        {
+            //возвращение прикола
+        }
         isDragging = false;
+        print(handler.isWin());
+
+        for (int i = 0; i < CreateCups.width; i++)
+        {
+            for (int j = 0; j < CreateCups.width - i; j++)
+            {
+                print(i + " " +  j + " " + CupsHandler.map[i, j]);
+            }
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
         if (isDragging)
-        {   
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            transform.Translate(mousePosition);
+        {
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            bool touch = false;
+            
+            foreach(CupCoords cupCoords in CupsHandler.availablePlaces)
+            {
+                if (Mathf.Sqrt(Mathf.Pow(Mathf.Abs(mousePosition.x - cupCoords.x), 2) + Mathf.Pow(Mathf.Abs(mousePosition.y - cupCoords.y), 2)) < 40)
+                {
+                    transform.position = new Vector3(cupCoords.x, cupCoords.y, 0);
+                    touch = true;
+                } 
+            }
+
+            if (!touch)
+            {
+                transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
+            }
+            
+
+
         }
     }
 }

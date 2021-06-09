@@ -2,19 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-/*
-public struct CupCoords
-{
-    public float x;
-    public float y;
 
-    public CupCoords(float x, float y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-}
-*/
 public class StartPlaying : MonoBehaviour
 {
     public Transform trayPos;
@@ -41,6 +29,7 @@ public class StartPlaying : MonoBehaviour
     CreateCups creator = new CreateCups();
     public static CupCoords[,] cupCoords;
     public static int[,] map;
+    public static int[,] target;
 
     void Start()
     {
@@ -48,7 +37,7 @@ public class StartPlaying : MonoBehaviour
         creator.Main(args);
         cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
         map = new int[CreateCups.width, CreateCups.width];
-        int[,] target = new int[CreateCups.width, CreateCups.width];
+        target = new int[CreateCups.width, CreateCups.width];
         map = creator.createMap(map, CreateCups.allCupsNumber);
         creator.getAvaivableCups(map);
         target = creator.shuffle(1, target, map);
@@ -245,6 +234,11 @@ public class StartPlaying : MonoBehaviour
     public static int[,] getMap()
     {
         return map;
+    }
+
+    public static int[,] getTargetMap()
+    {
+        return target;
     }
 
     // Update is called once per frame

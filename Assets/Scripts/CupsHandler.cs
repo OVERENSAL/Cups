@@ -35,12 +35,14 @@ public class CupsHandler : MonoBehaviour
     StartPlaying start = new StartPlaying();
     public static CupCoords[,] cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
     public static int[,] map = new int[CreateCups.width, CreateCups.width];
-    public static int[,] mapCoords = new int[CreateCups.width, CreateCups.width];
-    public int takeIndexX = 0, takeIndexY = 0;
+    public static int[,] targetMap = new int[CreateCups.width, CreateCups.width];
+    public static int[,] currentMapChange = new int[CreateCups.width, CreateCups.width];
+    //public static int[,] mapCoords = new int[CreateCups.width, CreateCups.width];
+    public int takeIndexX = 0, takeIndexY = 0, placingIndexX = 0, placingIndexY = 0;
 
     public void Main(string[] args)
 	{
-        
+
     }
 
     public void init()
@@ -48,6 +50,7 @@ public class CupsHandler : MonoBehaviour
         if (takeIndexX == 0 && takeIndexY == 0)
         {
             map = StartPlaying.getMap();
+            targetMap = StartPlaying.getTargetMap();
             cupCoords = StartPlaying.getCupCoords();
         }
         getAvaivableCups(map);
@@ -114,43 +117,81 @@ public class CupsHandler : MonoBehaviour
 
     public void setAvailablePlaces(Transform transform)
     {
-        availablePlaces.Clear();
-        int indexX = 0;
-        int indexY = 0;
-        while (indexX != CreateCups.width)
-        {
-            if (indexX + indexY == CreateCups.width - 1)
-            {
-                if (map[indexX, indexY] == 0)
-                {
-                    print(indexX + " " + indexY);
-                    availablePlaces.Add(new CupCoords(transform.position.x, transform.position.y));
-                    continue;
-                }
-                continue;
-            }
+        availablePlaces.Clear(); // [(x,y), ... ]
+        int X = 0;
+        int Y = 0;
 
-            if (map[indexX + 1, indexY] != 0 && map[indexX, indexY + 1] != 0
-                && (((indexX + 1) != takeIndexX || indexY != takeIndexY)
-                && (indexX != takeIndexX || (indexY + 1) != takeIndexY)))
+        print(CreateCups.width + " width");
+
+        for (int indexX = 0; indexX < CreateCups.width; indexX++)
+        {
+            for (int indexY = 0; indexY < CreateCups.width - indexX; indexY++)
             {
-                print(indexX + " " + indexY);
-                availablePlaces.Add(new CupCoords(transform.position.x, transform.position.y));
-                continue;
-            }
-            indexY++;
-            if (indexY == CreateCups.width)
-            {
-                indexX++;
-                indexY = 0;
+                setIndexes(transform);
+                if (map[indexX, indexY] == 0 && ((indexX + indexY == CreateCups.width - 1) 
+                    || map[indexX + 1, indexY] != 0 && map[indexX, indexY + 1] != 0) /*&& !(X == indexX && Y == indexY)*/ && !(X == indexX+1 && Y == indexY) && !(X == indexX && Y == indexY+1))
+                {
+                    availablePlaces.Add(new CupCoords(cupCoords[indexX, indexY].x, cupCoords[indexX, indexY].y));
+                }                
             }
         }
 
+        print(availablePlaces.Count+" Count");
+
+        void setIndexes(Transform transform)
+        {
+            for (int indexX = 0; indexX < CreateCups.width; indexX++)
+            {
+                for (int indexY = 0; indexY < CreateCups.width - indexX; indexY++)
+                {
+                    if (cupCoords[indexX, indexY].x == transform.position.x && cupCoords[indexX, indexY].y == transform.position.y)
+                    {
+                        X = indexX;
+                        Y = indexY;
+                    }
+                }
+            }
+        }
 
     }
 
-    public void changeCups()
+    public bool isValidCoords(Transform transform)
     {
+        for(int i = 0; i < CreateCups.width; i++)
+        {
+            for(int j = 0; j < CreateCups.width; j++)
+            {
+                if (transform.position.x == cupCoords[i, j].x && transform.position.y == cupCoords[i, j].y)
+                {
+                    placingIndexX = i;
+                    placingIndexY = j;
+                    return true;
+                }
+            }
+        }
 
+        return false;
+    }
+
+    public void changeMap()
+    {
+        map[placingIndexX, placingIndexY] = map[takeIndexX, takeIndexY];
+        map[takeIndexX, takeIndexY] = 0;
+    }
+
+    public bool isWin()
+    {
+        for(int i = 0; i < CreateCups.width; i++)
+        {
+            for (int j = 0; j < CreateCups.width; j++)
+            {
+                if (map[i, j] != targetMap[i, j])
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
