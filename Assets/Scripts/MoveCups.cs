@@ -6,12 +6,18 @@ public class MoveCups : MonoBehaviour
 {
     CupsHandler handler = new CupsHandler();
     private bool isDragging;
+    Vector3 cupPosition = new Vector3(0, 0, 0);
 
     public void OnMouseDown()
     {
         handler.init();
         isDragging = handler.isMovingCup(transform);
         handler.setAvailablePlaces(transform);
+        if (isDragging)
+        {
+            cupPosition.x = transform.position.x;
+            cupPosition.y = transform.position.y;
+        }
     }
 
     public void OnMouseUp()
@@ -21,18 +27,18 @@ public class MoveCups : MonoBehaviour
             handler.changeMap();
         } else
         {
-            //возвращение прикола
+            transform.position = cupPosition;
         }
         isDragging = false;
-        print(handler.isWin());
+        handler.isWin();
 
-        for (int i = 0; i < CreateCups.width; i++)
+        /*for (int i = 0; i < CreateCups.width; i++)
         {
             for (int j = 0; j < CreateCups.width - i; j++)
             {
                 print(i + " " +  j + " " + CupsHandler.map[i, j]);
             }
-        }
+        }*/
 
     }
 

@@ -11,7 +11,11 @@ public class CreateCups : MonoBehaviour
     public static int allCupsNumber = 0;
     public void Main(string[] args)
     {
-        initDictionary();
+        if (rules.Count == 0)
+        {
+            initDictionary();
+        }
+        
         const int minCupsNumber = 5;
         const int maxCupsNumber = 8;
 
@@ -26,10 +30,10 @@ public class CreateCups : MonoBehaviour
 
         map = createMap(map, allCupsNumber);
         getAvaivableCups(map);
-        target = shuffle(3, target, map);
+        target = shuffle("1", target, map);
     }
 
-    public int[,] shuffle(int level, int[,] target, int[,] map)
+    public int[,] shuffle(string level, int[,] target, int[,] map)
     {
         int iteration = getIteration(level);
         for (int i = 0; i < Mathf.Sqrt(map.Length); i++)
@@ -86,19 +90,19 @@ public class CreateCups : MonoBehaviour
         return false;
     }
 
-    public int getIteration(int level)
+    public int getIteration(string level)
     {
-        if (level == 1)
+        if (level == "1")
         {
-            return Random.Range(3, 6);
+            return Random.Range(1, 3);
         }
-        else if (level == 2)
+        else if (level == "2")
         {
-            return Random.Range(5, 8);
+            return Random.Range(5, 9);
         }
         else
         {
-            return Random.Range(7, 10);
+            return Random.Range(10, 15);
         }
     }
 

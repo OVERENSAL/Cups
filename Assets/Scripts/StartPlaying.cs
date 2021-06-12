@@ -12,10 +12,9 @@ public class StartPlaying : MonoBehaviour
     public GameObject smallCup;
     public GameObject smallFullCup;
     public GameObject smallEmptyCup;
-    public GridLayoutGroup grid1;
-    public GridLayoutGroup grid2;
-    public GridLayoutGroup grid3;
-    public GridLayoutGroup grid4;
+    public GameObject fireWork;
+    public GameObject fireWork2;
+    public GameObject panel;
     public GridLayoutGroup targetGrid1;
     public GridLayoutGroup targetGrid2;
     public GridLayoutGroup targetGrid3;
@@ -27,12 +26,14 @@ public class StartPlaying : MonoBehaviour
     public Vector3 coords = new Vector3(-205, 75, 0);
 
     CreateCups creator = new CreateCups();
+    public static bool isWin;
     public static CupCoords[,] cupCoords;
     public static int[,] map;
     public static int[,] target;
 
     void Start()
     {
+        GameObject.FindWithTag("Panel").SetActive(false);
         string[] args = new string[] { };
         creator.Main(args);
         cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
@@ -40,63 +41,12 @@ public class StartPlaying : MonoBehaviour
         target = new int[CreateCups.width, CreateCups.width];
         map = creator.createMap(map, CreateCups.allCupsNumber);
         creator.getAvaivableCups(map);
-        target = creator.shuffle(1, target, map);
+        target = creator.shuffle(DiffHandler.levelDifficult, target, map);
 
-        initGrid();
-        //createCups(map, grid1, grid2, grid3, grid4, true);
         createCups(map, cupCoords, true);
-/*        for(int i = 0; i < CreateCups.width; i++)
-        {
-            for(int j = 0; j < CreateCups.width; j++)
-            {
-                Debug.Log(cupCoords[i, j].x + " " + cupCoords[i, j].y);
-            }
-        }*/
-        fillArrayOfCoords();
         initTargetGrid();
         createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
     }
-
-    void fillArrayOfCoords()
-    {
-        GameObject[] tempCups;
-        tempCups = GameObject.FindGameObjectsWithTag("Cup");
-        /*for(int i = 0; i < tempCups.Length; i++)
-        {
-            Debug.Log(tempCups[0].transform.position);
-        }*/
-        int indexX = CreateCups.width - 1;
-        int indexY = 0;
-        for(int i = 0; i < 4; i++)
-        {
-            GridLayoutGroup tmpGrid = getGrid(indexX, indexY, grid1, grid2, grid3, grid4);
-            int gridObjectIterator = 0;
-            /*Transform[] cups = tmpGrid.GetComponents<Transform>();//возврат грида
-            Debug.Log(cups.Length + " length");
-            for(int j = 0; j < cups[0].childCount; j++)
-            {
-                Debug.Log(cups[0].GetChild(j).localPosition);
-            }*/
-            //Debug.Log(cups[0].childCount + "childcount");
-            while (indexX != -1)
-            {
-                //cupsCoords[indexX, indexY] = getCupCoords(tmpGrid.transform.GetChild(gridObjectIterator));
-                //Debug.Log(tmpGrid.transform.GetChild(gridObjectIterator).position + " " + indexX + " " + indexY);
-                //Debug.Log(tmpGrid.GetComponent<Transform>().position);
-                indexX--;
-                indexY++;
-                gridObjectIterator++;
-            }
-            //Debug.Log("next");
-            indexX = CreateCups.width - i - 2;
-            indexY = 0;
-        }
-    }
-
-    /*CupCoords getCupCoords(Transform transform)
-    {
-        return new CupCoords((int)transform.position.x, (int)transform.position.x);
-    }*/
 
     void createCups(int[,] map, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4, bool size)//мелкие приколы
     {
@@ -107,7 +57,6 @@ public class StartPlaying : MonoBehaviour
             //создаем прикол в позиции грида
             GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), getGrid(indexX, indexY, grid1, grid2, grid3, grid4).transform.position, Quaternion.identity);
             gameObject.transform.SetParent(getGrid(indexX, indexY, grid1, grid2, grid3, grid4).transform, false);
-            //Debug.Log(gameObject.transform.position);
             cups.Add(gameObject);
             if (map[indexX, indexY] > 0)
             {
@@ -154,19 +103,6 @@ public class StartPlaying : MonoBehaviour
             return fullCup;
         return smallFullCup;
     }//вернет пустой, полный либо прозрачный прикол
-
-    void initGrid()
-    {
-        grids.Add(grid1);
-        grids.Add(grid2);
-        grids.Add(grid3);
-        grids.Add(grid4);
-        for(int i = 0; i < 4; i++)
-        {
-            grids[i].constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            grids[i].constraintCount = CreateCups.width - i;
-        }
-    }//мем
 
     void initTargetGrid()
     {
@@ -241,9 +177,22 @@ public class StartPlaying : MonoBehaviour
         return target;
     }
 
+    public void showPanel()
+    {
+        panel.SetActive(true);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (isWin)
+        {
+            GameObject firework = Instantiate(fireWork);
+            firework.transform.position = new Vector3(firework.transform.position.x, firework.transform.position.y, 0);
+            GameObject firework2 = Instantiate(fireWork2);
+            firework2.transform.position = new Vector3(firework2.transform.position.x, firework2.transform.position.y, 0);
+            Invoke("showPanel", 1.5f);
+            isWin = false;
+        }
     }
 }

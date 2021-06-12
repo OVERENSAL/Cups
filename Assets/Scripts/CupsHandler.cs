@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public struct CupIndexes
 {
@@ -29,6 +29,7 @@ public struct CupCoords
 
 public class CupsHandler : MonoBehaviour
 {
+    public GameObject panel;
     public static List<CupIndexes> availableIndexes = new List<CupIndexes>();
     public static List<CupCoords> availablePlaces = new List<CupCoords>();
     CreateCups creator = new CreateCups();
@@ -37,7 +38,6 @@ public class CupsHandler : MonoBehaviour
     public static int[,] map = new int[CreateCups.width, CreateCups.width];
     public static int[,] targetMap = new int[CreateCups.width, CreateCups.width];
     public static int[,] currentMapChange = new int[CreateCups.width, CreateCups.width];
-    //public static int[,] mapCoords = new int[CreateCups.width, CreateCups.width];
     public int takeIndexX = 0, takeIndexY = 0, placingIndexX = 0, placingIndexY = 0;
 
     public void Main(string[] args)
@@ -186,12 +186,13 @@ public class CupsHandler : MonoBehaviour
             for (int j = 0; j < CreateCups.width; j++)
             {
                 if (map[i, j] != targetMap[i, j])
-                {
+                {   
                     return false;
                 }
             }
         }
 
+        StartPlaying.isWin = true;
         return true;
     }
 }
