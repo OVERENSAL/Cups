@@ -15,6 +15,17 @@ public class StartPlaying : MonoBehaviour
     public GameObject fireWork;
     public GameObject fireWork2;
     public GameObject panel;
+    public Text diffText;
+    public Text levelText;
+    public Text time;
+    public SpriteRenderer cupRenderer;
+    public SpriteRenderer fullCupRenderer;
+    public Sprite cupSprite;
+    public Sprite fullCupSprite;
+    public Sprite vineSprite;
+    public Sprite vineEmptySprite;
+    public Sprite glassSprite;
+    public Sprite waterGlassSprite;
     public GridLayoutGroup targetGrid1;
     public GridLayoutGroup targetGrid2;
     public GridLayoutGroup targetGrid3;
@@ -30,22 +41,82 @@ public class StartPlaying : MonoBehaviour
     public static CupCoords[,] cupCoords;
     public static int[,] map;
     public static int[,] target;
+    private float second = 1;
+    private bool timeIsStop = false;
 
     void Start()
     {
-        GameObject.FindWithTag("Panel").SetActive(false);
+        cupRenderer.sprite = cupSprite;
+        fullCupRenderer.sprite = fullCupSprite;
+        getSprite();
+        
+        second = getLevelDiff() * 10;
+        time.text = "0:" + second;
+        diffText.text = getText();
+        levelText.text = "Task " + (LevelCounter.levelCount + 1);
+        panel.SetActive(false);
         string[] args = new string[] { };
         creator.Main(args);
         cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
         map = new int[CreateCups.width, CreateCups.width];
-        target = new int[CreateCups.width, CreateCups.width];
         map = creator.createMap(map, CreateCups.allCupsNumber);
         creator.getAvaivableCups(map);
-        target = creator.shuffle(DiffHandler.levelDifficult, target, map);
+        target = new int[CreateCups.width, CreateCups.width];
+        target = creator.shuffle(getLevelDiff(), target, map);
 
         createCups(map, cupCoords, true);
         initTargetGrid();
         createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
+    }
+
+    void getSprite() {
+        if (getLevelDiff() == 2) {
+            cupRenderer.sprite = vineEmptySprite;
+            fullCupRenderer.sprite = vineSprite;
+        } else if (getLevelDiff() == 2) {
+            cupRenderer.sprite = glassSprite;
+            fullCupRenderer.sprite = waterGlassSprite;
+        }
+    }
+
+    bool targetIsEqualStart() {
+        if (target == null) {
+            print("sd");
+            return true;
+        }
+        for(int i = 0; i < CreateCups.width; i++)
+        {
+            for (int j = 0; j < CreateCups.width; j++)
+            {
+                if (map[i, j] != target[i, j])
+                {   
+                    print("false");
+                    return false;
+                }
+            }
+        }
+        print("hi i am oldman");
+        return false;
+    }
+
+    int getLevelDiff() {
+        if (LevelCounter.levelCount < 5) {
+            return 1;
+        } else if (LevelCounter.levelCount < 10) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+
+    string getText() {
+        if (getLevelDiff() == 1) {
+            return "Easy";
+        } else if (getLevelDiff() == 2) {
+            return "Medium";
+        } else {
+            return "Hard";
+        }
     }
 
     void createCups(int[,] map, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4, bool size)//мелкие приколы
@@ -57,7 +128,6 @@ public class StartPlaying : MonoBehaviour
             //создаем прикол в позиции грида
             GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), getGrid(indexX, indexY, grid1, grid2, grid3, grid4).transform.position, Quaternion.identity);
             gameObject.transform.SetParent(getGrid(indexX, indexY, grid1, grid2, grid3, grid4).transform, false);
-            cups.Add(gameObject);
             if (map[indexX, indexY] > 0)
             {
                 List<int> temp = new List<int> { indexX, indexY };
@@ -144,7 +214,7 @@ public class StartPlaying : MonoBehaviour
             addCoords.x += 58;
             cupCoords[indexX, indexY] = new CupCoords(mainCoords.x, mainCoords.y);
             //Debug.Log(gameObject.transform.position);
-            cups.Add(gameObject);
+            cups.Add(gameObject);            
             if (map[indexX, indexY] > 0)
             {
                 List<int> temp = new List<int> { indexX, indexY };
@@ -182,9 +252,24 @@ public class StartPlaying : MonoBehaviour
         panel.SetActive(true);
     }
 
+    string getZero(float second) {
+        if (second < 10) {
+            return "0";
+        }
+        return "";
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (!timeIsStop) {
+            second -= Time.deltaTime;
+            time.text = "0:" + getZero(Mathf.Round(second)) + Mathf.Round(second);
+            if (Mathf.Round(second) < 5) {
+                time.color = new Color(255, 0, 0);
+            }
+        }
+        
         if (isWin)
         {
             GameObject firework = Instantiate(fireWork);
@@ -192,6 +277,8 @@ public class StartPlaying : MonoBehaviour
             GameObject firework2 = Instantiate(fireWork2);
             firework2.transform.position = new Vector3(firework2.transform.position.x, firework2.transform.position.y, 0);
             Invoke("showPanel", 1.5f);
+            LevelCounter.levelCount++;
+            timeIsStop = true;
             isWin = false;
         }
     }

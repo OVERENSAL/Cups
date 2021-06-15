@@ -121,8 +121,6 @@ public class CupsHandler : MonoBehaviour
         int X = 0;
         int Y = 0;
 
-        print(CreateCups.width + " width");
-
         for (int indexX = 0; indexX < CreateCups.width; indexX++)
         {
             for (int indexY = 0; indexY < CreateCups.width - indexX; indexY++)
@@ -135,8 +133,6 @@ public class CupsHandler : MonoBehaviour
                 }                
             }
         }
-
-        print(availablePlaces.Count+" Count");
 
         void setIndexes(Transform transform)
         {

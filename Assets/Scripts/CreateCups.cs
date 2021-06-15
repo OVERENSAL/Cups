@@ -22,7 +22,7 @@ public class CreateCups : MonoBehaviour
         for (int i = 0; i < 10; i++)//?????
         {
             width = Random.Range(minCupsNumber, maxCupsNumber + 1);
-            allCupsNumber = Random.Range(width, rules[width] + 1);
+            allCupsNumber = Random.Range(getMinCupsNumber(), getMaxCupsNumber());
         }
 
         int[,] map = new int[width, width];
@@ -30,10 +30,30 @@ public class CreateCups : MonoBehaviour
 
         map = createMap(map, allCupsNumber);
         getAvaivableCups(map);
-        target = shuffle("1", target, map);
+        target = shuffle(1, target, map);
     }
 
-    public int[,] shuffle(string level, int[,] target, int[,] map)
+    int getMinCupsNumber() {
+        if (LevelCounter.levelCount < 5) {
+            return 5;
+        } else if (LevelCounter.levelCount < 10) {
+            return 8;
+        } else {
+            return 12;
+        }
+    }
+
+    int getMaxCupsNumber() {
+        if (LevelCounter.levelCount < 5) {
+            return 9;
+        } else if (LevelCounter.levelCount < 10) {
+            return 13;
+        } else {
+            return 18;
+        }
+    }
+
+    public int[,] shuffle(int level, int[,] target, int[,] map)
     {
         int iteration = getIteration(level);
         for (int i = 0; i < Mathf.Sqrt(map.Length); i++)
@@ -45,20 +65,65 @@ public class CreateCups : MonoBehaviour
         }
         for (int i = 0; i < iteration; i++)
         {
-            getAvaivableCups(target);
-            getFreeIndexes(target);
-            int cupIndex = Random.Range(0, availableIndexes.Count);
-            int freeIndex = Random.Range(0, freeIndexes.Count);
-            while (isUnderTheAvailableIndex(cupIndex, freeIndex))
-            {
-                freeIndex = Random.Range(0, freeIndexes.Count);
+            // getAvaivableCups(target);
+            // getFreeIndexes(target);
+            // int cupIndex = Random.Range(0, availableIndexes.Count);
+            // int freeIndex = Random.Range(0, freeIndexes.Count);
+            // while (isUnderTheAvailableIndex(cupIndex, freeIndex))
+            // {
+            //     freeIndex = Random.Range(0, freeIndexes.Count);
+            // }
+            // int transfer = target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]];
+            // target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]] = 0;
+            // target[freeIndexes[freeIndex][0], freeIndexes[freeIndex][1]] = transfer;
+
+            while (isEqual()) {
+                shuf();
             }
-            int transfer = target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]];
-            target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]] = 0;
-            target[freeIndexes[freeIndex][0], freeIndexes[freeIndex][1]] = transfer;
         }
 
         return target;
+
+        bool isEqual() {
+            for(int i = 0; i < CreateCups.width; i++)
+            {
+                for (int j = 0; j < CreateCups.width; j++)
+                {
+                    if (map[i, j] != target[i, j])
+                    {   
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        void shuf() {
+            int memoryX = -1;
+            int memoryY = -1;
+            for (int i = 0; i < iteration; i++)
+            {
+                getAvaivableCups(target);
+                getFreeIndexes(target);
+                int cupIndex = Random.Range(0, availableIndexes.Count);
+                int freeIndex = Random.Range(0, freeIndexes.Count);
+                if (memoryX != -1) {
+                    while (availableIndexes[freeIndex][0] != memoryX || availableIndexes[freeIndex][1] != memoryY) {
+                        cupIndex = Random.Range(0, availableIndexes.Count);
+                    }
+                }
+                while (isUnderTheAvailableIndex(cupIndex, freeIndex))
+                {
+                    freeIndex = Random.Range(0, freeIndexes.Count);
+                }
+                memoryX = freeIndexes[freeIndex][0];
+                memoryY = freeIndexes[freeIndex][1];
+                int transfer = target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]];
+                target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]] = 0;
+                target[freeIndexes[freeIndex][0], freeIndexes[freeIndex][1]] = transfer;
+            }
+        }
     }
 
     bool isUnderTheAvailableIndex(int cupIndex, int freeIndex)
@@ -90,15 +155,15 @@ public class CreateCups : MonoBehaviour
         return false;
     }
 
-    public int getIteration(string level)
+    public int getIteration(int level)
     {
-        if (level == "1")
+        if (level == 1)
         {
-            return Random.Range(1, 3);
+            return Random.Range(2, 4);
         }
-        else if (level == "2")
+        else if (level == 2)
         {
-            return Random.Range(5, 9);
+            return Random.Range(4, 7);
         }
         else
         {
@@ -213,9 +278,8 @@ public class CreateCups : MonoBehaviour
 
     public void initDictionary()
     {
-        rules.Add(5, 7);
-        rules.Add(6, 10);
-        rules.Add(7, 13);
-        rules.Add(8, 17);
+        rules.Add(5, 9);
+        rules.Add(8, 13);
+        rules.Add(12, 18);
     }
 }
