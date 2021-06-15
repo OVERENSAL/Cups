@@ -20,8 +20,6 @@ public class StartPlaying : MonoBehaviour
     public Text time;
     public SpriteRenderer cupRenderer;
     public SpriteRenderer fullCupRenderer;
-    public SpriteRenderer smallCupRenderer;
-    public SpriteRenderer smallFullCupRenderer;
     public Sprite cupSprite;
     public Sprite fullCupSprite;
     public Sprite vineSprite;
@@ -37,7 +35,7 @@ public class StartPlaying : MonoBehaviour
     public List<List<int>> cupsIndexes = new List<List<int>>();
     public List<GridLayoutGroup> grids = new List<GridLayoutGroup>();
     private Vector3 trayCoords = new Vector3(-205, 75, 0);
-    private Vector3 tvCoords = new Vector3(-205, 200, 0);
+    private Vector3 tvCoords = new Vector3(-138, -82, 0);
 
     CreateCups creator = new CreateCups();
     public static bool isWin;
@@ -52,7 +50,6 @@ public class StartPlaying : MonoBehaviour
         cupRenderer.sprite = cupSprite;
         fullCupRenderer.sprite = fullCupSprite;
         getSprite(cupRenderer, fullCupRenderer);
-        getSprite(smallCupRenderer, smallFullCupRenderer);
 
         second = getLevelDiff() * 10;
         time.text = "0:" + second;
@@ -68,14 +65,14 @@ public class StartPlaying : MonoBehaviour
         target = creator.shuffle(getLevelDiff(), target, map);
 
         createCups(map, cupCoords, true, 29, 92, 58, trayPos, trayCoords);
-        createCups(target, cupCoords, true, 20, 80, 40, tvPos, tvCoords);
+        createCups(target, cupCoords, true, 20, 53, 40, tvPos, tvCoords);
     }
 
     void getSprite(SpriteRenderer cup, SpriteRenderer fullCup) {
         if (getLevelDiff() == 2) {
             cup.sprite = vineEmptySprite;
             fullCup.sprite = vineSprite;
-        } else if (getLevelDiff() == 2) {
+        } else if (getLevelDiff() == 3) {
             cup.sprite = glassSprite;
             fullCup.sprite = waterGlassSprite;
         }
@@ -83,7 +80,6 @@ public class StartPlaying : MonoBehaviour
 
     bool targetIsEqualStart() {
         if (target == null) {
-            print("sd");
             return true;
         }
         for(int i = 0; i < CreateCups.width; i++)
@@ -92,12 +88,10 @@ public class StartPlaying : MonoBehaviour
             {
                 if (map[i, j] != target[i, j])
                 {   
-                    print("false");
                     return false;
                 }
             }
         }
-        print("hi i am oldman");
         return false;
     }
 
@@ -146,10 +140,10 @@ public class StartPlaying : MonoBehaviour
             
             if (map[indexX, indexY] != 0)
             {
-                print(transfer.position);
-                print(coords);
-                print(transfer.position + coords);
                 GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), mainCoords, Quaternion.identity);
+                if (space == 40) {
+                    gameObject.transform.localScale = new Vector3(13f, 12f, 0f);
+                }
             }
             addCoords.x += space;//58
             if (space != 40)
@@ -325,7 +319,12 @@ public class StartPlaying : MonoBehaviour
             if (Mathf.Round(second) < 5) {
                 time.color = new Color(255, 0, 0);
             }
+            if (second < 0) {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("LoseScene");
+            }
         }
+
+
         
         if (isWin)
         {
