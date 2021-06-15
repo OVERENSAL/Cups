@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class StartPlaying : MonoBehaviour
 {
     public Transform trayPos;
+    public Transform tvPos;
     public GameObject cup;
     public GameObject fullCup;
     public GameObject emptyCup;
@@ -14,12 +15,13 @@ public class StartPlaying : MonoBehaviour
     public GameObject smallEmptyCup;
     public GameObject fireWork;
     public GameObject fireWork2;
-    public GameObject panel;
     public Text diffText;
     public Text levelText;
     public Text time;
     public SpriteRenderer cupRenderer;
     public SpriteRenderer fullCupRenderer;
+    public SpriteRenderer smallCupRenderer;
+    public SpriteRenderer smallFullCupRenderer;
     public Sprite cupSprite;
     public Sprite fullCupSprite;
     public Sprite vineSprite;
@@ -34,7 +36,8 @@ public class StartPlaying : MonoBehaviour
     public List<GameObject> targetCups = new List<GameObject>();
     public List<List<int>> cupsIndexes = new List<List<int>>();
     public List<GridLayoutGroup> grids = new List<GridLayoutGroup>();
-    public Vector3 coords = new Vector3(-205, 75, 0);
+    private Vector3 trayCoords = new Vector3(-205, 75, 0);
+    private Vector3 tvCoords = new Vector3(-205, 200, 0);
 
     CreateCups creator = new CreateCups();
     public static bool isWin;
@@ -48,13 +51,13 @@ public class StartPlaying : MonoBehaviour
     {
         cupRenderer.sprite = cupSprite;
         fullCupRenderer.sprite = fullCupSprite;
-        getSprite();
-        
+        getSprite(cupRenderer, fullCupRenderer);
+        getSprite(smallCupRenderer, smallFullCupRenderer);
+
         second = getLevelDiff() * 10;
         time.text = "0:" + second;
         diffText.text = getText();
         levelText.text = "Task " + (LevelCounter.levelCount + 1);
-        panel.SetActive(false);
         string[] args = new string[] { };
         creator.Main(args);
         cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
@@ -64,18 +67,17 @@ public class StartPlaying : MonoBehaviour
         target = new int[CreateCups.width, CreateCups.width];
         target = creator.shuffle(getLevelDiff(), target, map);
 
-        createCups(map, cupCoords, true);
-        initTargetGrid();
-        createCups(target, targetGrid1, targetGrid2, targetGrid3, targetGrid4, false);
+        createCups(map, cupCoords, true, 29, 92, 58, trayPos, trayCoords);
+        createCups(target, cupCoords, true, 20, 80, 40, tvPos, tvCoords);
     }
 
-    void getSprite() {
+    void getSprite(SpriteRenderer cup, SpriteRenderer fullCup) {
         if (getLevelDiff() == 2) {
-            cupRenderer.sprite = vineEmptySprite;
-            fullCupRenderer.sprite = vineSprite;
+            cup.sprite = vineEmptySprite;
+            fullCup.sprite = vineSprite;
         } else if (getLevelDiff() == 2) {
-            cupRenderer.sprite = glassSprite;
-            fullCupRenderer.sprite = waterGlassSprite;
+            cup.sprite = glassSprite;
+            fullCup.sprite = waterGlassSprite;
         }
     }
 
@@ -119,7 +121,62 @@ public class StartPlaying : MonoBehaviour
         }
     }
 
-    void createCups(int[,] map, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4, bool size)//мелкие приколы
+    void createCups(int[,] map, CupCoords[,] cupCoords, bool size, int x, int y, int space, Transform transfer, Vector3 coords)
+    {
+        Vector3 addCoords = new Vector3(0, 0, 0);
+        int indexX = CreateCups.width - 1;
+        int indexY = 0;
+        while (indexX != 0 || indexY != 0)
+        {
+            if (indexY == 0 && indexX != CreateCups.width - 1)
+            {
+                addCoords.x += x;//29
+                addCoords.y += y;//92
+            }
+
+            if (indexY == 0)//инициализация сдвига, когда стаканов меньше 7
+            {
+                for (int i = 0; i < (7 - indexX); i++)
+                {
+                    addCoords.x += x;
+                }
+            }
+
+            Vector3 mainCoords = transfer.position + coords + addCoords;
+            
+            if (map[indexX, indexY] != 0)
+            {
+                print(transfer.position);
+                print(coords);
+                print(transfer.position + coords);
+                GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), mainCoords, Quaternion.identity);
+            }
+            addCoords.x += space;//58
+            if (space != 40)
+            {
+                cupCoords[indexX, indexY] = new CupCoords(mainCoords.x, mainCoords.y);
+            }
+            
+            //Debug.Log(gameObject.transform.position);
+            cups.Add(gameObject);
+            if (map[indexX, indexY] > 0)
+            {
+                List<int> temp = new List<int> { indexX, indexY };
+                cupsIndexes.Add(temp);
+            }
+            indexX--;
+            indexY++;
+            if (indexX < 0)
+            {
+                addCoords.x = -x;//29
+                indexX = indexY - 2;
+                indexY = 0;
+            }
+
+        }
+    }//помещаем прикол на гла
+
+    /*void createCups(int[,] map, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4, bool size)//мелкие приколы
     {
         int indexX = (int)Mathf.Sqrt(map.Length) - 1;
         int indexY = 0;
@@ -142,7 +199,7 @@ public class StartPlaying : MonoBehaviour
             }
         }
     }
-
+*/
     GridLayoutGroup getGrid(int indexX, int indexY, GridLayoutGroup grid1, GridLayoutGroup grid2, GridLayoutGroup grid3, GridLayoutGroup grid4)
     {
         if (indexX + indexY == CreateCups.width - 1)
@@ -186,7 +243,7 @@ public class StartPlaying : MonoBehaviour
         targetGrid4.constraintCount = CreateCups.width - 3;
     }//инициализация количества колонок в целевом гриде
 
-    void createCups(int[,] map, CupCoords[,] cupCoords, bool size)
+    /*void createCups(int[,] map, CupCoords[,] cupCoords, bool size)
     {
         Vector3 addCoords = new Vector3(0, 0, 0);
         int indexX = CreateCups.width - 1;
@@ -230,7 +287,7 @@ public class StartPlaying : MonoBehaviour
             }
 
         }
-    }//помещаем прикол на главный экран
+    }//помещаем прикол на главный экран*/
 
     public static CupCoords[,] getCupCoords()
     {
@@ -249,7 +306,7 @@ public class StartPlaying : MonoBehaviour
 
     public void showPanel()
     {
-        panel.SetActive(true);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("WinScene");
     }
 
     string getZero(float second) {

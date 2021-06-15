@@ -65,17 +65,18 @@ public class CreateCups : MonoBehaviour
         }
         for (int i = 0; i < iteration; i++)
         {
-            // getAvaivableCups(target);
-            // getFreeIndexes(target);
-            // int cupIndex = Random.Range(0, availableIndexes.Count);
-            // int freeIndex = Random.Range(0, freeIndexes.Count);
-            // while (isUnderTheAvailableIndex(cupIndex, freeIndex))
-            // {
-            //     freeIndex = Random.Range(0, freeIndexes.Count);
-            // }
-            // int transfer = target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]];
-            // target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]] = 0;
-            // target[freeIndexes[freeIndex][0], freeIndexes[freeIndex][1]] = transfer;
+            //shuf();
+            getAvaivableCups(target);
+            getFreeIndexes(target);
+            int cupIndex = Random.Range(0, availableIndexes.Count);
+            int freeIndex = Random.Range(0, freeIndexes.Count);
+            while (isUnderTheAvailableIndex(cupIndex, freeIndex))
+            {
+                freeIndex = Random.Range(0, freeIndexes.Count);
+            }
+            int transfer = target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]];
+            target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]] = 0;
+            target[freeIndexes[freeIndex][0], freeIndexes[freeIndex][1]] = transfer;
 
             while (isEqual()) {
                 shuf();
@@ -100,25 +101,25 @@ public class CreateCups : MonoBehaviour
         }
 
         void shuf() {
-            int memoryX = -1;
-            int memoryY = -1;
+            /*int memoryX = -1;
+            int memoryY = -1;*/
             for (int i = 0; i < iteration; i++)
             {
                 getAvaivableCups(target);
                 getFreeIndexes(target);
                 int cupIndex = Random.Range(0, availableIndexes.Count);
                 int freeIndex = Random.Range(0, freeIndexes.Count);
-                if (memoryX != -1) {
+                /*if (memoryX != -1) {
                     while (availableIndexes[freeIndex][0] != memoryX || availableIndexes[freeIndex][1] != memoryY) {
                         cupIndex = Random.Range(0, availableIndexes.Count);
                     }
-                }
+                }*/
                 while (isUnderTheAvailableIndex(cupIndex, freeIndex))
                 {
                     freeIndex = Random.Range(0, freeIndexes.Count);
                 }
-                memoryX = freeIndexes[freeIndex][0];
-                memoryY = freeIndexes[freeIndex][1];
+                /*memoryX = freeIndexes[freeIndex][0];
+                memoryY = freeIndexes[freeIndex][1];*/
                 int transfer = target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]];
                 target[availableIndexes[cupIndex][0], availableIndexes[cupIndex][1]] = 0;
                 target[freeIndexes[freeIndex][0], freeIndexes[freeIndex][1]] = transfer;
