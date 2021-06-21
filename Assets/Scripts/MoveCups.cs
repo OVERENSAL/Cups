@@ -5,6 +5,8 @@ using UnityEngine;
 public class MoveCups : MonoBehaviour
 {
     CupsHandler handler = new CupsHandler();
+    public AudioClip took;
+    public AudioClip take;
     private bool isDragging;
     Vector3 cupPosition = new Vector3(0, 0, 0);
 
@@ -15,6 +17,7 @@ public class MoveCups : MonoBehaviour
         handler.setAvailablePlaces(transform);
         if (isDragging)
         {
+            playAudio(take);
             cupPosition.x = transform.position.x;
             cupPosition.y = transform.position.y;
         }
@@ -29,8 +32,10 @@ public class MoveCups : MonoBehaviour
         {
             transform.position = cupPosition;
         }
+        playAudio(took);
         isDragging = false;
         handler.isWin();
+
 
         /*for (int i = 0; i < CreateCups.width; i++)
         {
@@ -40,6 +45,12 @@ public class MoveCups : MonoBehaviour
             }
         }*/
 
+    }
+
+    public void playAudio(AudioClip clip) {
+        if (TurnOffSounds.sound) {
+            GetComponent<AudioSource>().PlayOneShot(clip);
+        }
     }
 
     // Update is called once per frame

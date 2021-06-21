@@ -18,12 +18,16 @@ public class CreateCups : MonoBehaviour
         
         const int minCupsNumber = 5;
         const int maxCupsNumber = 8;
-
-        for (int i = 0; i < 10; i++)//?????
-        {
-            width = Random.Range(minCupsNumber, maxCupsNumber + 1);
-            allCupsNumber = Random.Range(getMinCupsNumber(), getMaxCupsNumber());
+        if (LevelCounter.levelCount >= 10) {
+            width = 8;
         }
+        else if (LevelCounter.levelCount > 5) {
+            width = Random.Range(7, maxCupsNumber + 1);
+        } else {
+            width = Random.Range(minCupsNumber, maxCupsNumber + 1);
+        }
+        
+        allCupsNumber = Random.Range(getMinCupsNumber(), getMaxCupsNumber());
 
         int[,] map = new int[width, width];
         int[,] target = new int[width, width];
@@ -47,9 +51,9 @@ public class CreateCups : MonoBehaviour
         if (LevelCounter.levelCount < 5) {
             return 9;
         } else if (LevelCounter.levelCount < 10) {
-            return 13;
+            return 12;
         } else {
-            return 18;
+            return 17;
         }
     }
 

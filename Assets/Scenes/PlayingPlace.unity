@@ -234,8 +234,6 @@ MonoBehaviour:
   time: {fileID: 349000199}
   cupRenderer: {fileID: 3128463442027433239, guid: eaa6a979a239b7d46b496fd146e72008, type: 3}
   fullCupRenderer: {fileID: 4836970914043645326, guid: 3fd35205582f04d438e6ebfee683e3aa, type: 3}
-  smallCupRenderer: {fileID: 0}
-  smallFullCupRenderer: {fileID: 0}
   cupSprite: {fileID: 21300000, guid: 1da6dbfc5a8e4414b97a071cc8372fea, type: 3}
   fullCupSprite: {fileID: 21300000, guid: e95f0e316fa2db54d818448905e9da7a, type: 3}
   vineSprite: {fileID: 21300000, guid: 74689e553865c2340ae9f94936939cc9, type: 3}
@@ -326,7 +324,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 117494910}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 289, y: 1.4642, z: 0}
+  m_LocalPosition: {x: 301.4, y: -1.1, z: 0}
   m_LocalScale: {x: 107.09121, y: 89.21595, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -586,7 +584,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 332371491}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 189.51, y: -161.7584, z: -150}
+  m_LocalPosition: {x: 189.51, y: -321.6, z: -150}
   m_LocalScale: {x: 0.93, y: 0.51, z: 1}
   m_Children: []
   m_Father: {fileID: 1627735391}
@@ -10837,7 +10835,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1949664378}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -192.3976, y: -161.7584, z: -150}
+  m_LocalPosition: {x: -192.3976, y: -316.42, z: -150}
   m_LocalScale: {x: 0.93, y: 0.51, z: 1}
   m_Children: []
   m_Father: {fileID: 1627735391}
