@@ -12,39 +12,34 @@ public class MoveCups : MonoBehaviour
 
     public void OnMouseDown()
     {
-        handler.init();
-        isDragging = handler.isMovingCup(transform);
-        handler.setAvailablePlaces(transform);
-        if (isDragging)
-        {
-            playAudio(take);
-            cupPosition.x = transform.position.x;
-            cupPosition.y = transform.position.y;
+        if (transform.position.y < 10) {
+            handler.init();
+            isDragging = handler.isMovingCup(transform);
+            handler.setAvailablePlaces(transform);
+            if (isDragging)
+            {
+                playAudio(take);
+                cupPosition.x = transform.position.x;
+                cupPosition.y = transform.position.y;
+            }
         }
+        
     }
 
     public void OnMouseUp()
     {
-        if (handler.isValidCoords(transform))
-        {
-            handler.changeMap();
-        } else
-        {
-            transform.position = cupPosition;
-        }
-        playAudio(took);
-        isDragging = false;
-        handler.isWin();
-
-
-        /*for (int i = 0; i < CreateCups.width; i++)
-        {
-            for (int j = 0; j < CreateCups.width - i; j++)
+        if (transform.position.y < 10) {
+            if (handler.isValidCoords(transform))
             {
-                print(i + " " +  j + " " + CupsHandler.map[i, j]);
+                handler.changeMap();
+            } else
+            {
+                transform.position = cupPosition;
             }
-        }*/
-
+            playAudio(took);
+            isDragging = false;
+            handler.isWin();
+        }
     }
 
     public void playAudio(AudioClip clip) {

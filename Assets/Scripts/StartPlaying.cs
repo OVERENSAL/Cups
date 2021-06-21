@@ -35,7 +35,7 @@ public class StartPlaying : MonoBehaviour
     public List<List<int>> cupsIndexes = new List<List<int>>();
     public List<GridLayoutGroup> grids = new List<GridLayoutGroup>();
     private Vector3 trayCoords = new Vector3(-205, 75, 0);
-    private Vector3 tvCoords = new Vector3(-138, -82, 0);
+    private Vector3 tvCoords = new Vector3(-205, -136, 0);
 
     CreateCups creator = new CreateCups();
     public static bool isWin;
@@ -53,8 +53,7 @@ public class StartPlaying : MonoBehaviour
 
         second = getLevelDiff() * 10;
         time.text = "0:" + second;
-        diffText.text = getText();
-        levelText.text = "Task " + (LevelCounter.levelCount + 1);
+        levelText.text = "Level " + getLevelDiff() + " - " + (LevelCounter.levelDiffCount + 1);
         string[] args = new string[] { };
         creator.Main(args);
         cupCoords = new CupCoords[CreateCups.width, CreateCups.width];
@@ -65,7 +64,7 @@ public class StartPlaying : MonoBehaviour
         target = creator.shuffle(getLevelDiff(), target, map);
 
         createCups(map, cupCoords, true, 29, 92, 58, trayPos, trayCoords);
-        createCups(target, cupCoords, true, 20, 53, 40, tvPos, tvCoords);
+        createCups(target, cupCoords, true, 29, 91, 58, tvPos, tvCoords);
     }
 
     void getSprite(SpriteRenderer cup, SpriteRenderer fullCup) {
@@ -141,12 +140,9 @@ public class StartPlaying : MonoBehaviour
             if (map[indexX, indexY] != 0)
             {
                 GameObject gameObject = Instantiate(emptyOrFull(map[indexX, indexY], size), mainCoords, Quaternion.identity);
-                if (space == 40) {
-                    gameObject.transform.localScale = new Vector3(13f, 12f, 0f);
-                }
             }
             addCoords.x += space;//58
-            if (space != 40)
+            if (y != 91)
             {
                 cupCoords[indexX, indexY] = new CupCoords(mainCoords.x, mainCoords.y);
             }
@@ -334,6 +330,12 @@ public class StartPlaying : MonoBehaviour
             firework2.transform.position = new Vector3(firework2.transform.position.x, firework2.transform.position.y, 0);
             Invoke("showPanel", 1.5f);
             LevelCounter.levelCount++;
+            LevelCounter.levelDiffCount++;
+            if (LevelCounter.levelCount == 5) {
+                LevelCounter.levelDiffCount = 0;
+            } else if (LevelCounter.levelCount == 10) {
+                LevelCounter.levelDiffCount = 0;
+            }
             timeIsStop = true;
             isWin = false;
         }
