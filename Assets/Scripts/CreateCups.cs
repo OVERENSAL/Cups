@@ -181,7 +181,7 @@ public class CreateCups : MonoBehaviour
         availableIndexes.Clear();
         int indexX = (int)Mathf.Sqrt(map.Length) - 1;
         int indexY = 0;
-        while (indexX != 0 || indexY != 0)
+        while (indexX != 0 || indexY != 0) //подозрение на бесконечный цикл
         {
             if (indexX > 0 && indexY == 0)
             {
@@ -241,7 +241,7 @@ public class CreateCups : MonoBehaviour
         freeIndexes.Clear();
         int indexX = (int)Mathf.Sqrt(map.Length) - 1;
         int indexY = 0;
-        while (indexX != 0 || indexY != 0)
+        while (indexX != 0 || indexY != 0) //тоже подозрение на бесконечный цикл
         {
             if (isFloor())
             {
